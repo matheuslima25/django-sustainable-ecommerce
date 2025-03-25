@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Novo Produto{% endblock %}
+
+{% block content %}
+  <h2>Novo Produto</h2>
+  <form method="post" enctype="multipart/form-data" id="product-form">
+    {% csrf_token %}
+
+    <div class="mb-3">
+      <label for="id_image" class="form-label">Imagem do Produto</label>
+      <input type="file" name="image" id="id_image" class="form-control">
+      <div class="text-center">
+        <img id="preview-image" src="#" alt="Preview" class="img-fluid mt-3 d-none rounded shadow" style="max-height: 200px;">
+      </div>
+    </div>
+    
+
+    {{ form.name|as_crispy_field }}
+    {{ form.code|as_crispy_field }}
+    {{ form.product_type|as_crispy_field }}
+    <div id="shoe-size-field" class="d-none">
+      {{ form.shoe_size|as_crispy_field }}
+    </div>
+    <div id="clothing-size-field" class="d-none">
+      {{ form.clothing_size|as_crispy_field }}
+    </div>
+    {{ form.gender|as_crispy_field }}
+    {{ form.purchase_price|as_crispy_field }}
+    {{ form.resale_price|as_crispy_field }}
+
+    <button type="submit" class="btn btn-success">Salvar</button>
+    <a href="{% url 'core:product_list' %}" class="btn btn-danger ms-2">Cancelar</a>
+  </form>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Preview da imagem
+  document.getElementById("id_image").addEventListener("change", function() {
+    const preview = document.getElementById("preview-image");
+    const file = this.files[0];
+    if (file) {
+      preview.src = URL.createObjectURL(file);
+      preview.classList.remove("d-none");
+    } else {
+      preview.src = "#";
+      preview.classList.add("d-none");
+    }
+  });
+
+  // Dropdown dependente
+  const typeSelect = document.getElementById("id_product_type");
+  const shoeField = document.getElementById("shoe-size-field");
+  const clothField = document.getElementById("clothing-size-field");
+
+  function toggleSizeFields() {
+    const type = typeSelect.value;
+    if (type === "shoe") {
+      shoeField.classList.remove("d-none");
+      clothField.classList.add("d-none");
+    } else if (type === "clothing") {
+      clothField.classList.remove("d-none");
+      shoeField.classList.add("d-none");
+    } else {
+      clothField.classList.add("d-none");
+      shoeField.classList.add("d-none");
+    }
+  }
+
+  typeSelect.addEventListener("change", toggleSizeFields);
+  window.addEventListener("DOMContentLoaded", toggleSizeFields); // ativa no carregamento também
+</script>
+{% endblock %}

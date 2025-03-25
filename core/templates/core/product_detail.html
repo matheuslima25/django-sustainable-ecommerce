@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Início</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'core:product_list' %}">Produtos</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+  </ol>
+</nav>
+
+<div class="text-center mb-4">
+  {% if product.image %}
+  <div class="bg-light p-3 rounded shadow-sm d-inline-block">
+    <img src="{{ product.image.url }}" class="img-fluid rounded" alt="{{ product.name }}" style="max-height: 300px;">
+  </div>
+  {% endif %}
+  <h2 class="mt-4">{{ product.name }}</h2>
+  <p class="mb-1"><strong>Código:</strong> {{ product.code }}</p>
+  <p class="mb-1"><strong>Preço de Revenda:</strong> R$ {{ product.resale_price }}</p>
+
+  {% if user.is_superuser %}
+    <a href="{% url 'core:product_stockout_list' product.pk %}" class="btn btn-outline-secondary btn-sm mt-2">
+      <i class="bi bi-clock-history"></i> Ver histórico de saídas
+    </a>
+  {% endif %}
+</div>
+
+<hr>
+<h4 class="mb-3">Avaliações ({{ reviews.count }})</h4>
+
+{% for review in reviews %}
+<div class="border rounded p-3 mb-3 shadow-sm">
+  <strong>
+    {% if review.user %}
+      {{ review.user.username }}
+    {% else %}
+      Anônimo
+    {% endif %}
+  </strong>  
+  <div class="mb-1">
+    {% for i in "12345"|make_list %}
+      {% if forloop.counter <= review.rating %}
+        <i class="bi bi-star-fill text-warning"></i>
+      {% else %}
+        <i class="bi bi-star text-warning"></i>
+      {% endif %}
+    {% endfor %}
+  </div>
+  <p class="text-muted small mb-0">{{ review.comment }}</p>
+</div>
+{% empty %}
+<p class="text-muted">Nenhuma avaliação ainda.</p>
+{% endfor %}
+
+{% if user.is_authenticated %}
+  <hr>
+  {% if user_review %}
+    <div class="alert alert-info text-center mb-4">
+      Você já avaliou este produto.
+      <a href="{% url 'core:review_edit' user_review.pk %}" class="btn btn-sm btn-outline-primary ms-2">
+        Editar Avaliação
+      </a>
+    </div>
+  {% else %}
+    <div class="card shadow-sm border-0 mb-5">
+      <div class="card-body">
+        <h5 class="card-title mb-4 text-center">Deixe sua avaliação</h5>
+        <form method="post">
+          {% csrf_token %}
+          <div class="row g-3 align-items-start">
+            <div class="col-md-3">
+              <label for="id_rating" class="form-label">Nota</label>
+              {{ form.rating|add_class:"form-select" }}
+            </div>
+            <div class="col-md-9">
+              <label for="id_comment" class="form-label">Comentário</label>
+              {{ form.comment|add_class:"form-control"|attr:"style=height:38px;" }}
+            </div>
+          </div>
+          <div class="text-end mt-4">
+            <button type="submit" class="btn btn-primary px-4">Enviar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  {% endif %}
+{% else %}
+  <p><a href="{% url 'login' %}?next={{ request.path }}">Faça login</a> para avaliar.</p>
+{% endif %}
+
+<hr>
+<h4 class="mt-5 mb-3">Talvez você também goste:</h4>
+<div class="row">
+  {% for item in suggested %}
+  <div class="col-md-3">
+    <div class="card mb-3 h-100">
+      {% if item.image %}
+      <a href="{% url 'core:product_detail' item.pk %}" class="overflow-hidden">
+        <img src="{{ item.image.url }}" class="card-img-top object-fit-cover" style="height: 160px;" alt="{{ item.name }}">
+      </a>
+      {% endif %}
+      <div class="card-body text-center">
+        <h6 class="card-title">
+          <a href="{% url 'core:product_detail' item.pk %}" class="text-decoration-none">{{ item.name }}</a>
+        </h6>
+        <p class="small text-muted">R$ {{ item.resale_price }}</p>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <p class="text-muted">Sem sugestões no momento.</p>
+  {% endfor %}
+</div>
+{% endblock %}

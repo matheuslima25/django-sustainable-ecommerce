@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Editar Avaliação{% endblock %}
+{% block content %}
+<h3 class="mb-4">Editar Avaliação</h3>
+<form method="post">
+  {% csrf_token %}
+  {{ form|crispy }}
+  <button type="submit" class="btn btn-success">Salvar alterações</button>
+  <a href="{% url 'core:product_detail' object.product.pk %}" class="btn btn-danger ms-2">Cancelar</a>
+</form>
+{% endblock %}

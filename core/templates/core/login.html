@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 70vh;">
+  <div class="card shadow p-4" style="width: 100%; max-width: 400px;">
+    <h4 class="text-center mb-4">Login</h4>
+
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger text-center">
+        {% for error in form.non_field_errors %}
+          {{ error }}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label for="id_username" class="form-label">Usuário</label>
+        <input type="text" name="username" class="form-control" id="id_username" required autofocus>
+      </div>
+      <div class="mb-3">
+        <label for="id_password" class="form-label">Senha</label>
+        <input type="password" name="password" class="form-control" id="id_password" required>
+      </div>
+      <div class="d-grid mb-3">
+        <button type="submit" class="btn btn-primary">Entrar</button>
+      </div>
+    </form>
+    <div class="text-center">
+      <a href="{% url 'core:home' %}" class="btn btn-link">
+        <i class="bi bi-arrow-left"></i> Voltar
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

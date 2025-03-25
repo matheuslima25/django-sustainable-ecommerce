@@ -1,0 +1,13 @@
+a {
+  text-decoration: none;
+  color: black;
+}
+
+.zoom-on-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.zoom-on-hover:hover {
+  transform: scale(1.05);
+}
+

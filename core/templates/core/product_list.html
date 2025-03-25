@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block title %}Produtos{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2>Produtos</h2>
+  <a href="{% url 'core:product_create' %}" class="btn btn-primary">Novo Produto</a>
+</div>
+
+<form method="get" id="search-form" class="mb-4">
+  <div class="row g-2">
+    <div class="col-md-4">
+      <input type="text" name="q" id="search-input" class="form-control"
+             placeholder="Buscar por nome ou código..." value="{{ request.GET.q }}">
+    </div>
+    <div class="col-md-2">
+      <select name="type" class="form-select" id="filter-type">
+        <option value="">Tipo</option>
+        <option value="shoe" {% if request.GET.type == 'shoe' %}selected{% endif %}>Calçado</option>
+        <option value="clothing" {% if request.GET.type == 'clothing' %}selected{% endif %}>Roupa</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <select name="gender" class="form-select" id="filter-gender">
+        <option value="">Gênero</option>
+        <option value="F" {% if request.GET.gender == 'F' %}selected{% endif %}>Feminino</option>
+        <option value="M" {% if request.GET.gender == 'M' %}selected{% endif %}>Masculino</option>
+        <option value="U" {% if request.GET.gender == 'U' %}selected{% endif %}>Unissex</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <select name="size" class="form-select" id="filter-size">
+        <option value="">Tamanho</option>
+        {% for s in clothing_sizes %}
+          <option value="{{ s }}" {% if request.GET.size == s %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+        {% for i in shoe_sizes %}
+          <option value="{{ i }}" {% if request.GET.size == i %}selected{% endif %}>{{ i }}</option>
+        {% endfor %}
+      </select>      
+    </div>
+  </div>
+</form>
+
+<div id="product-list">
+  {% include 'core/includes/product_cards.html' %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const input = document.getElementById('search-input');
+  const form = document.getElementById('search-form');
+  const productList = document.getElementById('product-list');
+
+  // Dispara ao digitar
+  input.addEventListener('input', function () {
+    const query = input.value.trim();
+    const url = query ? `?q=${query}` : window.location.pathname;
+    fetchResults(url);
+  });
+
+  // Paginação com AJAX
+  productList.addEventListener('click', function (e) {
+    if (e.target.classList.contains('page-link')) {
+      e.preventDefault();
+      fetchResults(e.target.getAttribute('href'));
+    }
+  });
+
+  ['filter-type', 'filter-gender', 'filter-size'].forEach(id => {
+    document.getElementById(id).addEventListener('change', () => {
+      const formData = new FormData(form);
+      const queryString = new URLSearchParams(formData).toString();
+      fetchResults(`?${queryString}`);
+    });
+  });
+
+  function fetchResults(url) {
+    fetch(url, {
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+      .then(res => res.json())
+      .then(data => {
+        productList.innerHTML = data.html;
+      });
+  }
+</script>
+{% endblock %}

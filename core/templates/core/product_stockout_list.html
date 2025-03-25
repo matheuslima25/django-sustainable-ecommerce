@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Histórico - {{ product.name }}{% endblock %}
+{% block content %}
+<h2>Histórico de Saídas - {{ product.name }}</h2>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Data</th>
+      <th>Usuário</th>
+      <th>Quantidade</th>
+      <th>Motivo</th>
+      <th>Tamanho</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for out in stockouts %}
+    <tr>
+      <td>{{ out.date|date:"d/m/Y H:i" }}</td>
+      <td>
+        {% if out.user %}
+          {{ out.user.username }}
+        {% else %}
+          Desconhecido
+        {% endif %}
+      </td>
+      <td>{{ out.quantity }}</td>
+      <td>{{ out.note }}</td>
+      <td>{{ out.stock.size }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="5" class="text-center text-muted">Nenhuma saída registrada.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<a href="{% url 'core:product_detail' product.pk %}" class="btn btn-secondary mt-3">Voltar</a>
+{% endblock %}
