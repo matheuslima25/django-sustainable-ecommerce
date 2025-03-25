@@ -19,12 +19,30 @@
   </div>
   {% endif %}
   <h2 class="mt-4">{{ product.name }}</h2>
+  {% if product.brand %}
+    <p class="text-muted">Marca: <strong>{{ product.brand.name }}</strong></p>
+  {% endif %}
   <p class="mb-1"><strong>Código:</strong> {{ product.code }}</p>
   <p class="mb-1"><strong>Preço de Revenda:</strong> R$ {{ product.resale_price }}</p>
+  {% if product.colors %}
+    <p class="mb-1"><strong>Cores Disponíveis:</strong></p>
+    <div class="d-flex flex-wrap justify-content-center gap-2 mb-3">
+      {% for color in product.colors %}
+        {% for nome, hex in COLORS %}
+          {% if nome == color %}
+            <div title="{{ nome }}" class="rounded-circle shadow-sm border border-secondary" style="width: 36px; height: 36px; background-color: {{ hex }}; border: 2px solid #fff;"></div>
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+    </div>
+  {% endif %}
 
   {% if user.is_superuser %}
     <a href="{% url 'core:product_stockout_list' product.pk %}" class="btn btn-outline-secondary btn-sm mt-2">
       <i class="bi bi-clock-history"></i> Ver histórico de saídas
+    </a>
+    <a href="{% url 'core:product_edit' product.pk %}" class="btn btn-outline-primary btn-sm mt-2">
+      <i class="bi bi-pencil"></i> Editar Produto
     </a>
   {% endif %}
 </div>
@@ -96,7 +114,7 @@
 <h4 class="mt-5 mb-3">Talvez você também goste:</h4>
 <div class="row">
   {% for item in suggested %}
-  <div class="col-md-3">
+  <div class="col-md-3 mb-2">
     <div class="card mb-3 h-100">
       {% if item.image %}
       <a href="{% url 'core:product_detail' item.pk %}" class="overflow-hidden">

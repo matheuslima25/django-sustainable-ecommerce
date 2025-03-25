@@ -11,8 +11,8 @@ from django.views.generic import (CreateView, DetailView, ListView,
                                   TemplateView, UpdateView)
 from django.views.generic.edit import FormMixin
 
-from .forms import ProductForm, ReviewForm
-from .models import Product, Review, StockOut
+from .forms import BrandForm, ProductForm, ReviewForm
+from .models import Brand, Product, Review, StockOut
 
 
 class ProductListView(View):
@@ -60,6 +60,13 @@ class ProductListView(View):
 
 
 class ProductCreateView(CreateView, LoginRequiredMixin):
+    model = Product
+    form_class = ProductForm
+    template_name = 'core/product_form.html'
+    success_url = reverse_lazy('core:product_list')
+
+
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     template_name = 'core/product_form.html'
@@ -143,3 +150,10 @@ class ReviewUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def get_success_url(self):
         return self.object.product.get_absolute_url()
+
+
+class BrandCreateView(CreateView):
+    model = Brand
+    form_class = BrandForm
+    template_name = 'core/brand_form.html'
+    success_url = reverse_lazy('core:product_list')

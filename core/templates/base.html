@@ -14,6 +14,9 @@
       <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'core:home' %}">Início</a>
         <a class="navbar-brand" href="{% url 'core:product_list' %}">Estoque</a>
+        {% if user.is_superuser %}
+          <a class="navbar-brand" href="{% url 'core:brand_create' %}">Cadastrar Marca</a>
+        {% endif %}
         <div class="collapse navbar-collapse">
           <ul class="navbar-nav ms-auto">
             {% if user.is_authenticated %}

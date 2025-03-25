@@ -23,3 +23,18 @@ PRODUCT_TYPES = [
     ('shoe', 'Calçado'),
     ('clothing', 'Roupa'),
 ]
+
+COLORS = [
+    ('vermelho', '#FF0000'),
+    ('azul', '#0000FF'),
+    ('verde', '#008000'),
+    ('preto', '#000000'),
+    ('branco', '#FFFFFF'),
+    ('cinza', '#808080'),
+    ('amarelo', '#FFFF00'),
+    ('rosa', '#FFC0CB'),
+    ('roxo', '#800080'),
+    ('marrom', '#8B4513'),
+    ('laranja', '#FFA500'),
+    ('bege', '#F5F5DC'),
+]

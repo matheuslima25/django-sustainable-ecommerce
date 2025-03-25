@@ -15,20 +15,27 @@
         <img id="preview-image" src="#" alt="Preview" class="img-fluid mt-3 d-none rounded shadow" style="max-height: 200px;">
       </div>
     </div>
-    
 
     {{ form.name|as_crispy_field }}
     {{ form.code|as_crispy_field }}
+    {{ form.brand|as_crispy_field }}
     {{ form.product_type|as_crispy_field }}
+
     <div id="shoe-size-field" class="d-none">
       {{ form.shoe_size|as_crispy_field }}
     </div>
     <div id="clothing-size-field" class="d-none">
       {{ form.clothing_size|as_crispy_field }}
     </div>
+
     {{ form.gender|as_crispy_field }}
     {{ form.purchase_price|as_crispy_field }}
     {{ form.resale_price|as_crispy_field }}
+
+    <div class="mb-3">
+      <label for="id_colors" class="form-label">Cores Disponíveis</label>
+      {{ form.colors }}
+    </div>
 
     <button type="submit" class="btn btn-success">Salvar</button>
     <a href="{% url 'core:product_list' %}" class="btn btn-danger ms-2">Cancelar</a>
@@ -70,6 +77,6 @@
   }
 
   typeSelect.addEventListener("change", toggleSizeFields);
-  window.addEventListener("DOMContentLoaded", toggleSizeFields); // ativa no carregamento também
+  window.addEventListener("DOMContentLoaded", toggleSizeFields);
 </script>
 {% endblock %}

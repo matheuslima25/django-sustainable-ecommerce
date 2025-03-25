@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Product, Stock, StockOut
+from .models import Brand, Product, Stock, StockOut
 
 
 @admin.register(Product)
@@ -21,3 +21,9 @@ class StockOutAdmin(admin.ModelAdmin):
     list_display = ['stock', 'user', 'quantity', 'date']
     list_filter = ['date', 'user']
     search_fields = ['stock__product__name', 'user__username']
+
+
+@admin.register(Brand)
+class BrandAdmin(admin.ModelAdmin):
+    list_display = ['name',]
+    search_fields = ['name',]
